@@ -1,5 +1,5 @@
 const path = require('path');
-const extractTextPlugin = require(extract - text - webpack - plugin);
+const extractTextPlugin = require("extract-text-webpack-plugin");
 const webpack = require('webpack');
 
 const join = dest => path.resolve(__dirname, dest);
@@ -25,11 +25,11 @@ const config = module.exports = {
 
     module: {
         noParse: /vendor\/phoenix/,
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 query: {
                     cacheDirectory: true,
                     plugins: ['transform-decorators-legacy'],
