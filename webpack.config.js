@@ -1,5 +1,5 @@
 const path = require('path');
-const extractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const webpack = require('webpack');
 
 const join = dest => path.resolve(__dirname, dest);
@@ -19,9 +19,15 @@ const config = module.exports = {
     },
 
     resolve: {
-        extensions: ['', '.js', '.sass'],
-        modulesDirectories: ['node_modules'],
+        extensions: ['.js', '.sass'],
+        modules: ['node_modules'],
     },
+
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: 'css/application.css',
+        }),
+    ],
 
     module: {
         noParse: /vendor\/phoenix/,
@@ -29,23 +35,26 @@ const config = module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    cacheDirectory: true,
-                    plugins: ['transform-decorators-legacy'],
-                    presets: ['react', 'es2015', 'stage-2', 'stage-0'],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true,
+                        plugins: ['transform-decorators-legacy'],
+                        presets: ['react', 'es2015', 'stage-2', 'stage-0'],
+
+                    },
                 },
             },
             {
                 test: /\.sass$/,
-                loader: extractTextPlugin.extract('style', 'css!sass?indentedSyntax&includePaths[]=' + __dirname + '/node_modules'),
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "sass-loader"
+                ],
             },
         ],
     },
-
-    plugins: [
-        new extractTextPlugin('css/application.css'),
-    ],
 };
 
 if (process.env.NODE_ENV === 'production') {
